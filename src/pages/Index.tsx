@@ -14,6 +14,7 @@ const Index = () => {
   const [callbackModalOpen, setCallbackModalOpen] = useState(false);
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [requestType, setRequestType] = useState('Заявка');
   const { toast } = useToast();
 
   const categories = [
@@ -53,22 +54,85 @@ const Index = () => {
     setCalculatedPrice(Math.round((basePrice + weightPrice) * transportMultiplier));
   };
 
-  const handleRequestSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRequestSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: 'Заявка отправлена!',
-      description: 'Наш менеджер свяжется с вами в течение 15 минут',
-    });
-    setRequestModalOpen(false);
+    const formData = new FormData(e.currentTarget);
+    
+    const requestData = {
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      type: requestType
+    };
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/53d06962-a320-4ffe-a39d-222fd59d7137', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Заявка отправлена!',
+          description: 'Наш менеджер свяжется с вами в течение 15 минут',
+        });
+        setRequestModalOpen(false);
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось отправить заявку. Попробуйте позже.',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить заявку. Попробуйте позже.',
+        variant: 'destructive'
+      });
+    }
   };
 
-  const handleCallbackSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCallbackSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast({
-      title: 'Заявка принята!',
-      description: 'Мы перезвоним вам в указанное время',
-    });
-    setCallbackModalOpen(false);
+    const formData = new FormData(e.currentTarget);
+    
+    const requestData = {
+      name: formData.get('cb-name'),
+      phone: formData.get('cb-phone'),
+      callback_time: formData.get('cb-time'),
+      type: 'Обратный звонок'
+    };
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/53d06962-a320-4ffe-a39d-222fd59d7137', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Заявка принята!',
+          description: 'Мы перезвоним вам в указанное время',
+        });
+        setCallbackModalOpen(false);
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: 'Не удалось отправить заявку. Попробуйте позже.',
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить заявку. Попробуйте позже.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
@@ -119,7 +183,7 @@ const Index = () => {
               </Button>
               <Button 
                 size="sm"
-                onClick={() => setRequestModalOpen(true)}
+                onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }}
               >
                 Оставить заявку
               </Button>
@@ -146,7 +210,7 @@ const Index = () => {
                 <Button size="lg" asChild>
                   <a href="#catalog">Перейти в каталог</a>
                 </Button>
-                <Button size="lg" variant="secondary" onClick={() => setRequestModalOpen(true)}>
+                <Button size="lg" variant="secondary" onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }}>
                   Оставить заявку
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => setCallbackModalOpen(true)}>
@@ -232,7 +296,7 @@ const Index = () => {
           
           <div className="text-center bg-orange-50 p-8 rounded-lg">
             <p className="text-xl mb-4">Убедились в наших преимуществах? Получите бесплатную консультацию!</p>
-            <Button size="lg" onClick={() => setRequestModalOpen(true)}>
+            <Button size="lg" onClick={() => { setRequestType('Консультация'); setRequestModalOpen(true); }}>
               Получить консультацию
             </Button>
           </div>
@@ -279,7 +343,7 @@ const Index = () => {
                     <p className="text-gray-600 mb-2">Примерная стоимость доставки:</p>
                     <p className="text-3xl font-bold text-primary">{calculatedPrice.toLocaleString()} ₽</p>
                     <div className="flex gap-3 mt-4 justify-center">
-                      <Button onClick={() => setRequestModalOpen(true)}>
+                      <Button onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }}>
                         Зафиксировать цену
                       </Button>
                       <Button variant="outline" onClick={() => setCallbackModalOpen(true)}>
@@ -339,7 +403,7 @@ const Index = () => {
             <Icon name="PhoneCall" size={24} className="text-primary mb-1" />
             <span>Звонок</span>
           </button>
-          <button onClick={() => setRequestModalOpen(true)} className="flex flex-col items-center text-sm">
+          <button onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }} className="flex flex-col items-center text-sm">
             <Icon name="FileText" size={24} className="text-primary mb-1" />
             <span>Заявка</span>
           </button>
@@ -357,19 +421,19 @@ const Index = () => {
           <form onSubmit={handleRequestSubmit} className="space-y-4">
             <div>
               <Label htmlFor="name">Ваше имя *</Label>
-              <Input id="name" placeholder="Иван Иванов" required />
+              <Input id="name" name="name" placeholder="Иван Иванов" required />
             </div>
             <div>
               <Label htmlFor="phone">Телефон *</Label>
-              <Input id="phone" type="tel" placeholder="+7 (999) 123-45-67" required />
+              <Input id="phone" name="phone" type="tel" placeholder="+7 (999) 123-45-67" required />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="example@mail.ru" />
+              <Input id="email" name="email" type="email" placeholder="example@mail.ru" />
             </div>
             <div>
               <Label htmlFor="message">Сообщение</Label>
-              <Textarea id="message" placeholder="Опишите интересующие вас материалы или задайте вопрос" rows={4} />
+              <Textarea id="message" name="message" placeholder="Опишите интересующие вас материалы или задайте вопрос" rows={4} />
             </div>
             <Button type="submit" className="w-full">Отправить заявку</Button>
           </form>
@@ -387,24 +451,24 @@ const Index = () => {
           <form onSubmit={handleCallbackSubmit} className="space-y-4">
             <div>
               <Label htmlFor="cb-name">Ваше имя *</Label>
-              <Input id="cb-name" placeholder="Иван Иванов" required />
+              <Input id="cb-name" name="cb-name" placeholder="Иван Иванов" required />
             </div>
             <div>
               <Label htmlFor="cb-phone">Телефон *</Label>
-              <Input id="cb-phone" type="tel" placeholder="+7 (999) 123-45-67" required />
+              <Input id="cb-phone" name="cb-phone" type="tel" placeholder="+7 (999) 123-45-67" required />
             </div>
             <div>
               <Label htmlFor="cb-time">Удобное время для звонка</Label>
-              <Select>
+              <Select name="cb-time">
                 <SelectTrigger>
                   <SelectValue placeholder="Выберите время" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="hour">В течение часа</SelectItem>
-                  <SelectItem value="morning">С 9:00 до 12:00</SelectItem>
-                  <SelectItem value="afternoon">С 12:00 до 15:00</SelectItem>
-                  <SelectItem value="evening">С 15:00 до 18:00</SelectItem>
-                  <SelectItem value="custom">Уточнить по телефону</SelectItem>
+                  <SelectItem value="В течение часа">В течение часа</SelectItem>
+                  <SelectItem value="С 9:00 до 12:00">С 9:00 до 12:00</SelectItem>
+                  <SelectItem value="С 12:00 до 15:00">С 12:00 до 15:00</SelectItem>
+                  <SelectItem value="С 15:00 до 18:00">С 15:00 до 18:00</SelectItem>
+                  <SelectItem value="Уточнить по телефону">Уточнить по телефону</SelectItem>
                 </SelectContent>
               </Select>
             </div>

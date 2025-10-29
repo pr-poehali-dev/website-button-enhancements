@@ -1,0 +1,40 @@
+{
+  "tests": [
+    {
+      "name": "Test request submission",
+      "method": "POST",
+      "body": {
+        "name": "Иван Петров",
+        "phone": "+7 999 123-45-67",
+        "email": "test@example.com",
+        "message": "Интересует кирпич",
+        "type": "Заявка"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test callback request",
+      "method": "POST",
+      "body": {
+        "name": "Мария Иванова",
+        "phone": "+7 999 888-77-66",
+        "type": "Обратный звонок",
+        "callback_time": "С 9:00 до 12:00"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test OPTIONS request",
+      "method": "OPTIONS",
+      "expectedStatus": 200
+    }
+  ]
+}

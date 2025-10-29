@@ -173,6 +173,14 @@ const Index = () => {
             </div>
 
             <div className="flex items-center gap-3">
+              <div className="hidden lg:flex items-center gap-2 mr-2">
+                <a href="https://t.me/yourcompany" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                  <Icon name="Send" size={18} className="text-primary" />
+                </a>
+                <a href="https://vk.com/yourcompany" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                  <Icon name="Share2" size={18} className="text-primary" />
+                </a>
+              </div>
               <Button 
                 variant="outline" 
                 size="sm"
@@ -187,7 +195,8 @@ const Index = () => {
               >
                 Оставить заявку
               </Button>
-              <a href="tel:+79991234567" className="text-sm font-semibold hidden md:block">
+              <a href="tel:+79991234567" className="text-sm font-semibold hidden md:flex items-center gap-2 hover:text-primary transition-colors">
+                <Icon name="Phone" size={16} />
                 +7 (999) 123-45-67
               </a>
             </div>
@@ -279,6 +288,48 @@ const Index = () => {
         </div>
       </section>
 
+      <section id="about" className="py-16 bg-gradient-to-br from-gray-50 to-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">О компании</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div>
+              <h3 className="text-2xl font-bold mb-4">НПТО СтройИмперия</h3>
+              <p className="text-gray-600 mb-4">
+                Мы работаем на рынке строительных материалов с 2010 года. За это время мы стали одним из крупнейших поставщиков в регионе, обслужив более 1000 довольных клиентов.
+              </p>
+              <p className="text-gray-600 mb-4">
+                Наша миссия — обеспечивать строителей качественными материалами по честным ценам. Работаем напрямую с производителями, что позволяет нам предлагать лучшие условия на рынке.
+              </p>
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <p className="text-3xl font-bold text-primary">15+</p>
+                  <p className="text-sm text-gray-600">лет на рынке</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <p className="text-3xl font-bold text-primary">1000+</p>
+                  <p className="text-sm text-gray-600">клиентов</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <p className="text-3xl font-bold text-primary">1000+</p>
+                  <p className="text-sm text-gray-600">товаров</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <p className="text-3xl font-bold text-primary">24/7</p>
+                  <p className="text-sm text-gray-600">поддержка</p>
+                </div>
+              </div>
+            </div>
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=600&fit=crop" 
+                alt="О компании"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="advantages" className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Почему выбирают нас</h2>
@@ -299,6 +350,62 @@ const Index = () => {
             <Button size="lg" onClick={() => { setRequestType('Консультация'); setRequestModalOpen(true); }}>
               Получить консультацию
             </Button>
+          </div>
+        </div>
+      </section>
+
+      <section id="delivery" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Доставка</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Быстрая доставка по всему региону</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <Icon name="Truck" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Доставка за 24 часа</h4>
+                    <p className="text-gray-600 text-sm">Оперативная доставка строительных материалов на ваш объект</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <Icon name="MapPin" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Доставка по всей области</h4>
+                    <p className="text-gray-600 text-sm">Работаем по всей Московской области и близлежащим регионам</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <Icon name="DollarSign" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Бесплатная доставка от 50 000₽</h4>
+                    <p className="text-gray-600 text-sm">При заказе от 50 тысяч рублей доставка бесплатная</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <Icon name="PackageCheck" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Разгрузка манипулятором</h4>
+                    <p className="text-gray-600 text-sm">Доступна разгрузка материалов с помощью манипулятора</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=600&fit=crop" 
+                alt="Доставка"
+                className="w-full h-full object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -387,25 +494,67 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">© 2025 НПТО СтройИмперия. Все права защищены.</p>
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="font-bold text-xl mb-4"><span className="text-primary">НПТО</span> СтройИмперия</h3>
+              <p className="text-gray-400 text-sm">Надежный поставщик строительных материалов с 2010 года</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Навигация</h4>
+              <div className="space-y-2 text-sm">
+                <a href="#home" className="block text-gray-400 hover:text-white transition-colors">Главная</a>
+                <a href="#catalog" className="block text-gray-400 hover:text-white transition-colors">Каталог</a>
+                <a href="#promo" className="block text-gray-400 hover:text-white transition-colors">Акции</a>
+                <a href="#advantages" className="block text-gray-400 hover:text-white transition-colors">Преимущества</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Контакты</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <p>+7 (999) 123-45-67</p>
+                <p>info@stroyimperiya.ru</p>
+                <p>г. Москва, ул. Строителей, 123</p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Социальные сети</h4>
+              <div className="flex gap-3">
+                <a href="https://t.me/yourcompany" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-800 hover:bg-primary rounded-full transition-colors">
+                  <Icon name="Send" size={20} />
+                </a>
+                <a href="https://vk.com/yourcompany" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-800 hover:bg-primary rounded-full transition-colors">
+                  <Icon name="Share2" size={20} />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+            <p>© 2025 НПТО СтройИмперия. Все права защищены.</p>
+          </div>
         </div>
       </footer>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-40 lg:hidden">
-        <div className="container mx-auto px-4 py-3 flex justify-around">
-          <a href="tel:+79991234567" className="flex flex-col items-center text-sm">
-            <Icon name="Phone" size={24} className="text-primary mb-1" />
-            <span>Позвонить</span>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-orange-500 shadow-2xl z-40 lg:hidden">
+        <div className="container mx-auto px-2 py-3 flex justify-around items-center">
+          <a href="tel:+79991234567" className="flex flex-col items-center text-xs hover:bg-orange-50 p-2 rounded-lg transition-colors active:scale-95">
+            <div className="bg-orange-100 p-2 rounded-full mb-1">
+              <Icon name="Phone" size={20} className="text-primary" />
+            </div>
+            <span className="font-medium">Позвонить</span>
           </a>
-          <button onClick={() => setCallbackModalOpen(true)} className="flex flex-col items-center text-sm">
-            <Icon name="PhoneCall" size={24} className="text-primary mb-1" />
-            <span>Звонок</span>
+          <button onClick={() => setCallbackModalOpen(true)} className="flex flex-col items-center text-xs hover:bg-orange-50 p-2 rounded-lg transition-colors active:scale-95">
+            <div className="bg-orange-100 p-2 rounded-full mb-1">
+              <Icon name="PhoneCall" size={20} className="text-primary" />
+            </div>
+            <span className="font-medium">Звонок</span>
           </button>
-          <button onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }} className="flex flex-col items-center text-sm">
-            <Icon name="FileText" size={24} className="text-primary mb-1" />
-            <span>Заявка</span>
+          <button onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }} className="flex flex-col items-center text-xs hover:bg-orange-50 p-2 rounded-lg transition-colors active:scale-95">
+            <div className="bg-primary p-2 rounded-full mb-1 shadow-md">
+              <Icon name="FileText" size={20} className="text-white" />
+            </div>
+            <span className="font-medium text-primary">Заявка</span>
           </button>
         </div>
       </div>

@@ -15,6 +15,8 @@ const Index = () => {
   const [calculatedPrice, setCalculatedPrice] = useState<number | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [requestType, setRequestType] = useState('Заявка');
+  const [brickCalculation, setBrickCalculation] = useState<{ totalBricks: number; area: number } | null>(null);
+  const [blockCalculation, setBlockCalculation] = useState<{ totalBlocks: number; area: number } | null>(null);
   const { toast } = useToast();
 
   const categories = [
@@ -411,57 +413,209 @@ const Index = () => {
       </section>
 
       <section id="calculator" className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <h2 className="text-3xl font-bold text-center mb-12">Калькулятор доставки</h2>
-          <Card>
-            <CardContent className="p-8">
-              <form onSubmit={handleCalculate} className="space-y-6">
-                <div>
-                  <Label htmlFor="city">Город доставки</Label>
-                  <Input id="city" name="city" placeholder="Введите город" required />
-                </div>
-                
-                <div>
-                  <Label htmlFor="weight">Вес груза (кг)</Label>
-                  <Input id="weight" name="weight" type="number" placeholder="Введите вес" required />
-                </div>
-                
-                <div>
-                  <Label htmlFor="transport">Тип транспорта</Label>
-                  <Select name="transport" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите транспорт" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="gazelle">Газель</SelectItem>
-                      <SelectItem value="kamaz">Камаз</SelectItem>
-                      <SelectItem value="manipulator">Манипулятор</SelectItem>
-                      <SelectItem value="dump">Самосвал</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <Button type="submit" className="w-full" size="lg">
-                  Рассчитать стоимость
-                </Button>
-                
-                {calculatedPrice !== null && (
-                  <div className="bg-orange-50 p-6 rounded-lg text-center animate-scale-in">
-                    <p className="text-gray-600 mb-2">Примерная стоимость доставки:</p>
-                    <p className="text-3xl font-bold text-primary">{calculatedPrice.toLocaleString()} ₽</p>
-                    <div className="flex gap-3 mt-4 justify-center">
-                      <Button onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }}>
-                        Зафиксировать цену
-                      </Button>
-                      <Button variant="outline" onClick={() => setCallbackModalOpen(true)}>
-                        Обсудить детали
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">Калькуляторы</h2>
+          
+          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <Icon name="Truck" className="text-primary" />
+                  Калькулятор доставки
+                </h3>
+                <form onSubmit={handleCalculate} className="space-y-4">
+                  <div>
+                    <Label htmlFor="city">Город доставки</Label>
+                    <Input id="city" name="city" placeholder="Введите город" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="weight">Вес груза (кг)</Label>
+                    <Input id="weight" name="weight" type="number" placeholder="Введите вес" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="transport">Тип транспорта</Label>
+                    <Select name="transport" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите транспорт" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gazelle">Газель</SelectItem>
+                        <SelectItem value="kamaz">Камаз</SelectItem>
+                        <SelectItem value="manipulator">Манипулятор</SelectItem>
+                        <SelectItem value="dump">Самосвал</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button type="submit" className="w-full">
+                    Рассчитать стоимость
+                  </Button>
+                  
+                  {calculatedPrice !== null && (
+                    <div className="bg-orange-50 p-4 rounded-lg text-center animate-scale-in">
+                      <p className="text-sm text-gray-600 mb-1">Примерная стоимость доставки:</p>
+                      <p className="text-2xl font-bold text-primary">{calculatedPrice.toLocaleString()} ₽</p>
+                      <div className="flex flex-col gap-2 mt-3">
+                        <Button size="sm" onClick={() => { setRequestType('Заявка'); setRequestModalOpen(true); }}>
+                          Зафиксировать цену
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => setCallbackModalOpen(true)}>
+                          Обсудить детали
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <Icon name="Box" className="text-primary" />
+                  Калькулятор кирпича
+                </h3>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const length = Number(formData.get('brickLength'));
+                  const height = Number(formData.get('brickHeight'));
+                  const thickness = Number(formData.get('brickThickness'));
+                  const brickType = formData.get('brickType') as string;
+                  
+                  const area = length * height;
+                  let bricksPerSqm = 0;
+                  
+                  if (brickType === '1brick') bricksPerSqm = 51;
+                  else if (brickType === '1.5brick') bricksPerSqm = 153;
+                  else if (brickType === '2brick') bricksPerSqm = 204;
+                  
+                  const totalBricks = Math.ceil(area * bricksPerSqm);
+                  setBrickCalculation({ totalBricks, area });
+                }} className="space-y-4">
+                  <div>
+                    <Label htmlFor="brickLength">Длина стены (м)</Label>
+                    <Input id="brickLength" name="brickLength" type="number" step="0.1" placeholder="10" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="brickHeight">Высота стены (м)</Label>
+                    <Input id="brickHeight" name="brickHeight" type="number" step="0.1" placeholder="3" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="brickThickness">Толщина кладки</Label>
+                    <Select name="brickType" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите толщину" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1brick">В 1 кирпич (250 мм)</SelectItem>
+                        <SelectItem value="1.5brick">В 1.5 кирпича (380 мм)</SelectItem>
+                        <SelectItem value="2brick">В 2 кирпича (510 мм)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button type="submit" className="w-full">
+                    Рассчитать количество
+                  </Button>
+                  
+                  {brickCalculation && (
+                    <div className="bg-orange-50 p-4 rounded-lg animate-scale-in">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Площадь стены:</span>
+                          <span className="font-semibold">{brickCalculation.area} м²</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Кирпича нужно:</span>
+                          <span className="font-semibold text-primary">{brickCalculation.totalBricks} шт</span>
+                        </div>
+                      </div>
+                      <Button size="sm" className="w-full mt-3" onClick={() => { setRequestType('Заявка на кирпич'); setRequestModalOpen(true); }}>
+                        Заказать кирпич
                       </Button>
                     </div>
+                  )}
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <Icon name="Package" className="text-primary" />
+                  Калькулятор блоков
+                </h3>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const length = Number(formData.get('blockLength'));
+                  const height = Number(formData.get('blockHeight'));
+                  const blockSize = formData.get('blockSize') as string;
+                  
+                  const area = length * height;
+                  let blocksPerSqm = 0;
+                  
+                  if (blockSize === '600x300x200') blocksPerSqm = 8.3;
+                  else if (blockSize === '600x300x250') blocksPerSqm = 6.7;
+                  else if (blockSize === '625x300x250') blocksPerSqm = 6.4;
+                  
+                  const totalBlocks = Math.ceil(area * blocksPerSqm);
+                  setBlockCalculation({ totalBlocks, area });
+                }} className="space-y-4">
+                  <div>
+                    <Label htmlFor="blockLength">Длина стены (м)</Label>
+                    <Input id="blockLength" name="blockLength" type="number" step="0.1" placeholder="10" required />
                   </div>
-                )}
-              </form>
-            </CardContent>
-          </Card>
+                  
+                  <div>
+                    <Label htmlFor="blockHeight">Высота стены (м)</Label>
+                    <Input id="blockHeight" name="blockHeight" type="number" step="0.1" placeholder="3" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="blockSize">Размер блока</Label>
+                    <Select name="blockSize" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите размер" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="600x300x200">600×300×200 мм</SelectItem>
+                        <SelectItem value="600x300x250">600×300×250 мм</SelectItem>
+                        <SelectItem value="625x300x250">625×300×250 мм</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button type="submit" className="w-full">
+                    Рассчитать количество
+                  </Button>
+                  
+                  {blockCalculation && (
+                    <div className="bg-orange-50 p-4 rounded-lg animate-scale-in">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Площадь стены:</span>
+                          <span className="font-semibold">{blockCalculation.area} м²</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Блоков нужно:</span>
+                          <span className="font-semibold text-primary">{blockCalculation.totalBlocks} шт</span>
+                        </div>
+                      </div>
+                      <Button size="sm" className="w-full mt-3" onClick={() => { setRequestType('Заявка на блоки'); setRequestModalOpen(true); }}>
+                        Заказать блоки
+                      </Button>
+                    </div>
+                  )}
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
